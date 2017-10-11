@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config id="honda.crv.rd1.obd2a">
+    <properties>
+    </properties>
+    <commands>
+        <command id="com1"> <!-- OK -->
+            <class>ru.autometry.obd.commands.OBD1Command</class>
+            <property name="offset" value="0" />
+            <property name="length" value="16" />
+            <property name="answer.offset.rpm" value="0" />
+            <property name="answer.length.rpm" value="2" />
+            <property name="answer.offset.vss" value="2" />
+        </command>
+
+        <command id="com2">
+            <class>ru.autometry.obd.commands.OBD1Command</class>
+            <property name="offset" value="16" />
+            <property name="length" value="16" />
+            <property name="answer.offset.ect"  value="0" />
+            <property name="answer.offset.iat"  value="1" />
+            <property name="answer.offset.map"  value="2" />
+            <property name="answer.offset.pa"   value="3" />
+            <property name="answer.offset.tps"  value="4" />
+            <property name="answer.offset.o2"   value="5" />
+            <property name="answer.offset.bat"  value="7" />
+            <property name="answer.offset.altf" value="8" />
+        </command>
+        <command id="com3">
+            <class>ru.autometry.obd.commands.OBD1Command</class>
+            <property name="offset" value="32" />
+            <property name="answer.offset.corrct" value="0" />
+            <property name="answer.offset.corrlt" value="2" />
+            <property name="answer.offset.inj"    value="4" />
+            <property name="answer.length.inj"    value="2" />
+            <property name="answer.offset.injadv" value="6" />
+            <property name="answer.offset.iac"    value="9" />
+        </command>
+        <!--command id="knock">
+            <class>ru.autometryry.obd.commands.OBD1Command</class>
+            <property name="offset" value="60" />
+            <property name="length" value="1" />
+            <property name="answer.offset.knock" value="0" />
+        </command>
+        <command id="idecu">
+            <class>ru.autometryry.obd.commands.OBD1Command</class>
+            <property name="offset" value="118" />
+            <property name="length" value="10" />
+            <property name="answer.offset.idecu" value="0" />
+            <property name="answer.length.idecu" value="10" />
+        </command>
+        <command id="err">
+            <class>ru.autometryry.obd.commands.OBD1Command</class>
+            <property name="offset" value="64" />
+            <property name="length" value="16" />
+            <property name="answer.offset.err" value="0" />
+            <property name="answer.length.err" value="16" />
+        </command-->
+    </commands>
+    <adaptors>
+        <adaptor not-answer="err idecu inj rpm">
+            <class>ru.autometry.obd.commands.adaptor.UnsignedByteAdaptor</class>
+        </adaptor>
+        <adaptor not-answer="err idecu">
+            <class>ru.autometry.obd.commands.adaptor.IntegerAdaptor</class>
+        </adaptor>
+        <adaptor answer="rpm">
+            <class>ru.autometry.obd.commands.adaptor.honda.RPMAdaptor</class>
+            <property name="method" value="Obd2a" />
+            <property name="inverse" value="false" />
+        </adaptor>
+        <adaptor answer="ect iat">
+            <class>ru.autometry.obd.commands.adaptor.honda.TempInCelsiusAdaptor</class>
+        </adaptor>
+        <adaptor answer="map">
+            <class>ru.autometry.obd.commands.adaptor.honda.MapInBarAdaptor</class>
+        </adaptor>
+        <adaptor answer="pa">
+            <class>ru.autometry.obd.commands.adaptor.honda.BaroAPInBarAdaptor</class>
+        </adaptor>
+        <adaptor answer="tps">
+            <class>ru.autometry.obd.commands.adaptor.honda.TPSAdaptor</class>
+        </adaptor>
+        <adaptor answer="o2">
+            <class>ru.autometry.obd.commands.adaptor.honda.O2StockAdaptor</class>
+            <property name="method" value="Oxygen" />
+        </adaptor>
+        <adaptor answer="corrct corrlt">
+            <class>ru.autometry.obd.commands.adaptor.honda.CtLtCorrection</class>
+        </adaptor>
+        <adaptor answer="bat">
+            <class>ru.autometry.obd.commands.adaptor.honda.BatAdaptor</class>
+        </adaptor>
+        <adaptor answer="inj">
+            <class>ru.autometry.obd.commands.adaptor.honda.IngTimeAdaptor</class>
+            <property name="inverse" value="false" />
+        </adaptor>
+        <adaptor answer="injadv">
+            <class>ru.autometry.obd.commands.adaptor.honda.IngAdv1FAngleAdaptor</class>
+            <property name="inverse" value="false" />
+        </adaptor>
+    </adaptors>
+    <listeners>
+        <!-- listener>
+            <class>ru.autometryry.obd.commands.listener.ECULogListener</class>
+        </listener -->
+        <listener>
+            <class>ru.autometry.obd.commands.listener.OnlineTimeListener</class>
+        </listener>
+        <listener>
+            <class>ru.autometry.obd.commands.listener.DistanceListener</class>
+            <property name="speed.id" value="vss" />
+        </listener>
+        <listener>
+            <class>ru.autometry.obd.commands.listener.StoptimeListener</class>
+            <property name="speed.id" value="vss" />
+        </listener>
+        <listener>
+            <class>ru.autometry.obd.commands.listener.FuelLitersListener</class>
+            <property name="injtime.id" value="inj" />
+        </listener>
+        <listener>
+            <class>ru.autometry.obd.commands.listener.RotatesListener</class>
+            <property name="rpm.id" value="rpm" />
+        </listener>
+        <listener>
+            <class>ru.autometry.obd.commands.listener.MomentumListener</class>
+            <property name="setRpm" value="rpm" />
+            <property name="setVss" value="vss" />
+        </listener>
+    </listeners>
+</config>
